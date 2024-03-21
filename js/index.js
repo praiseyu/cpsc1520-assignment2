@@ -10,22 +10,22 @@
 */
 
 let albumStore;
-
 const albumForm = document.getElementById('album-search-form');
+const albumRows = document.getElementById('album-rows');
+albumForm.addEventListener('submit', onSubmitSearch);
 
 //fetch album data
 async function appInit() {
   const response = await fetch('public/data/albums.json')
   const data = await response.json()
   albumStore = [...data]
-  render(data, document.getElementById('album-rows'));
-
-
+  render(data, albumRows);
 
 }
 
+appInit();
+
 function render(data, container) {
-  console.log(data)
   data.forEach((item) => {
     const template = `<tr>
     <td>${item.album}</td>
@@ -40,26 +40,81 @@ function render(data, container) {
 }
 
 
-appInit();
 
-albumForm.addEventListener('submit', function onSubmitSearch(e) {
+
+
+
+function onSubmitSearch(e) {
   e.preventDefault();
   // get values from input fields
-  const textInput = e.currentTarget[0].value;
-  const numberInput = e.currentTarget[1].value;
-  if (textInput != null) {
-    getAlbumByNameOrArtist(data, textInput);
+  const textInput = e.currentTarget[0].value.trim().toLowerCase();
+  const numberInput = e.currentTarget[1].value.trim();
+  console.log(textInput);
+  console.log(numberInput);
+
+  if (textInput != '' && numberInput != '') {
+    getAlbumByRatingandName(albumStore, textInput, numberInput);
   }
-});
+  else if (textInput != '') {
+    getAlbumByNameOrArtist(albumStore, textInput)
+  }
+  else if (numberInput != '') {
+    getAlbumByRating(albumStore, numberInput);
+  }
+}
 
 function getAlbumByNameOrArtist(data, textInputValue) {
   const albums = data;
-  const query = textInputValue;
 
   const results = albums.filter((album) => {
-    if (albums.album === query || albums.artistName === query) {
+    const albumName = album.album.trim().toLowerCase();
+    const artistName = album.artistName.trim().toLowerCase();
+
+    if (albumName.includes(textInputValue) || artistName.includes(textInputValue)) {
+      return album
+    }
+    else {
+      return null;
+    }
+
+  })
+  clearData();
+  render(results, albumRows);
+}
+
+function getAlbumByRating(data, minimumValue) {
+  const albums = data;
+  const results = albums.filter((album) => {
+    return album.averageRating >= minimumValue
+  });
+  console.log(results);
+  clearData();
+  render(results, albumRows);
+}
+
+function getAlbumByRatingandName(data, textInputValue, minimumValue) {
+  const albums = data;
+
+  const results = albums.filter((album) => {
+    const albumName = album.album.trim().toLowerCase();
+    const artistName = album.artistName.trim().toLowerCase();
+    if (albumName.includes(textInputValue) || artistName.includes(textInputValue)) {
       return album;
     }
+  }).filter((album) => {
+    if (album.averageRating >= minimumValue) {
+      return album
+    }
   })
+  console.log(results);
+  clearData();
 
+  render(results, albumRows);
 };
+
+
+function clearData() {
+  while (albumRows.hasChildNodes()) {
+    albumRows.removeChild(albumRows.firstChild);
+  }
+}
