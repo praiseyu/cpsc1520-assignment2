@@ -14,10 +14,13 @@ const albumForm = document.getElementById('album-search-form');
 const albumRows = document.getElementById('album-rows');
 const avgRatingHeading = document.getElementsByTagName('th')[4];
 const numReviewsHeading = document.getElementsByTagName('th')[5];
+const releaseDate = document.getElementsByTagName('th')[1];
 
 albumForm.addEventListener('submit', onSubmitSearch);
 avgRatingHeading.addEventListener('click', () => sortHighToLow('averageRating'));
-numReviewsHeading.addEventListener('click', () => sortHighToLow('numberRatings'));
+numReviewsHeading.addEventListener('click', () => sortHighToLow('numberReviews'));
+releaseDate.addEventListener('click', () => sortHighToLow('releaseDate'));
+
 
 
 //fetch album data
@@ -26,7 +29,6 @@ async function appInit() {
   const data = await response.json()
   albumStore = [...data]
   render(data, albumRows);
-
 }
 
 appInit();
@@ -39,7 +41,7 @@ function render(data, container) {
     <td>${item.artistName}</td>
     <td>${item.genres}</td>
     <td>${item.averageRating}</td>
-    <td>${item.numberRatings}</td>
+    <td>${item.numberReviews}</td>
   </tr>`
     container.insertAdjacentHTML('afterbegin', template);
   })
@@ -140,4 +142,12 @@ function sortHighToLow(property) {
   console.log(highToLow);
   clearData();
   render(highToLow, albumRows);
+}
+
+function sortDate() {
+  const data = albumStore;
+  const parsedDate = data.forEach((album) => {
+    Date.parse(album.releaseDate)
+  })
+  console.log(parsedDate);
 }
