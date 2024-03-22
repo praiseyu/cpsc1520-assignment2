@@ -14,6 +14,7 @@ const albumForm = document.getElementById('album-search-form');
 const albumRows = document.getElementById('album-rows');
 albumForm.addEventListener('submit', onSubmitSearch);
 
+
 //fetch album data
 async function appInit() {
   const response = await fetch('public/data/albums.json')
@@ -46,6 +47,12 @@ function onSubmitSearch(e) {
   const numberInput = e.currentTarget[1].value.trim();
   console.log(textInput);
   console.log(numberInput);
+  if (!textInput) {
+    document.getElementById('search-input').classList.add("is-invalid");
+  }
+  if (numberInput > 5 || numberInput < 0) {
+    document.getElementById('min-album-rating-input').classList.add("is-invalid");
+  }
 
   if (textInput && numberInput) {
     getAlbumByRatingandName(albumStore, textInput, numberInput);
@@ -67,6 +74,10 @@ function getAlbumByNameOrArtist(data, textInputValue) {
     return albumName.includes(textInputValue) || artistName.includes(textInputValue);
   })
   clearData();
+
+  if (results.length == 0) {
+    resultNotFoundMessage();
+  }
   render(results, albumRows);
 }
 
@@ -104,4 +115,11 @@ function clearData() {
   while (albumRows.hasChildNodes()) {
     albumRows.removeChild(albumRows.firstChild);
   }
+}
+
+function resultNotFoundMessage() {
+
+  const template = `<div class="p-3 bg-warning text-dark"><p>There were no records found.</p></div>`
+  albumForm.insertAdjacentHTML('afterend', template);
+
 }
