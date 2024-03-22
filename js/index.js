@@ -39,11 +39,6 @@ function render(data, container) {
   })
 }
 
-
-
-
-
-
 function onSubmitSearch(e) {
   e.preventDefault();
   // get values from input fields
@@ -52,13 +47,13 @@ function onSubmitSearch(e) {
   console.log(textInput);
   console.log(numberInput);
 
-  if (textInput != '' && numberInput != '') {
+  if (textInput && numberInput) {
     getAlbumByRatingandName(albumStore, textInput, numberInput);
   }
-  else if (textInput != '') {
+  else if (textInput) {
     getAlbumByNameOrArtist(albumStore, textInput)
   }
-  else if (numberInput != '') {
+  else if (numberInput) {
     getAlbumByRating(albumStore, numberInput);
   }
 }
@@ -69,14 +64,7 @@ function getAlbumByNameOrArtist(data, textInputValue) {
   const results = albums.filter((album) => {
     const albumName = album.album.trim().toLowerCase();
     const artistName = album.artistName.trim().toLowerCase();
-
-    if (albumName.includes(textInputValue) || artistName.includes(textInputValue)) {
-      return album
-    }
-    else {
-      return null;
-    }
-
+    return albumName.includes(textInputValue) || artistName.includes(textInputValue);
   })
   clearData();
   render(results, albumRows);
@@ -87,7 +75,6 @@ function getAlbumByRating(data, minimumValue) {
   const results = albums.filter((album) => {
     return album.averageRating >= minimumValue
   });
-  console.log(results);
   clearData();
   render(results, albumRows);
 }
