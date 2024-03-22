@@ -12,7 +12,12 @@
 let albumStore;
 const albumForm = document.getElementById('album-search-form');
 const albumRows = document.getElementById('album-rows');
+// const albumHeaders = document.getElementsByTagName('th');
+const avgRatingHeading = document.getElementsByTagName('th')[4];
+const numReviewsHeading = document.getElementsByTagName('th')[5];
 albumForm.addEventListener('submit', onSubmitSearch);
+avgRatingHeading.addEventListener('click', sortHighToLowRating);
+numReviewsHeading.addEventListener('click', sortHighToLowReviews);
 
 
 //fetch album data
@@ -122,4 +127,32 @@ function resultNotFoundMessage() {
   const template = `<div class="p-3 bg-warning text-dark"><p>There were no records found.</p></div>`
   albumForm.insertAdjacentHTML('afterend', template);
 
+}
+
+
+function sortHighToLowRating() {
+  const data = albumStore;
+  const highToLow = data.sort((a, b) => {
+    if (b.averageRating > a.averageRating) {
+      return -1
+    }
+    return 0
+  })
+  console.log(highToLow);
+  clearData();
+  render(highToLow, albumRows);
+}
+
+function sortHighToLowReviews() {
+  const data = albumStore;
+  const highToLow = data.sort((a, b) => {
+    if (b.numberRatings > a.numberRatings) {
+      return -1
+    }
+    return 0
+  })
+
+  console.log(highToLow);
+  clearData();
+  render(highToLow, albumRows);
 }
