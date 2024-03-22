@@ -12,12 +12,12 @@
 let albumStore;
 const albumForm = document.getElementById('album-search-form');
 const albumRows = document.getElementById('album-rows');
-// const albumHeaders = document.getElementsByTagName('th');
 const avgRatingHeading = document.getElementsByTagName('th')[4];
 const numReviewsHeading = document.getElementsByTagName('th')[5];
+
 albumForm.addEventListener('submit', onSubmitSearch);
-avgRatingHeading.addEventListener('click', sortHighToLowRating);
-numReviewsHeading.addEventListener('click', sortHighToLowReviews);
+avgRatingHeading.addEventListener('click', () => sortHighToLow('averageRating'));
+numReviewsHeading.addEventListener('click', () => sortHighToLow('numberRatings'));
 
 
 //fetch album data
@@ -50,8 +50,7 @@ function onSubmitSearch(e) {
   // get values from input fields
   const textInput = e.currentTarget[0].value.trim().toLowerCase();
   const numberInput = e.currentTarget[1].value.trim();
-  console.log(textInput);
-  console.log(numberInput);
+
   if (!textInput) {
     document.getElementById('search-input').classList.add("is-invalid");
   }
@@ -130,28 +129,14 @@ function resultNotFoundMessage() {
 }
 
 
-function sortHighToLowRating() {
+function sortHighToLow(property) {
   const data = albumStore;
   const highToLow = data.sort((a, b) => {
-    if (b.averageRating > a.averageRating) {
+    if (b[property] > a[property]) {
       return -1
     }
     return 0
   })
-  console.log(highToLow);
-  clearData();
-  render(highToLow, albumRows);
-}
-
-function sortHighToLowReviews() {
-  const data = albumStore;
-  const highToLow = data.sort((a, b) => {
-    if (b.numberRatings > a.numberRatings) {
-      return -1
-    }
-    return 0
-  })
-
   console.log(highToLow);
   clearData();
   render(highToLow, albumRows);
