@@ -19,7 +19,7 @@ const releaseDate = document.getElementsByTagName('th')[1];
 albumForm.addEventListener('submit', onSubmitSearch);
 avgRatingHeading.addEventListener('click', () => sortHighToLow('averageRating'));
 numReviewsHeading.addEventListener('click', () => sortHighToLow('numberReviews'));
-releaseDate.addEventListener('click', () => sortHighToLow('releaseDate'));
+releaseDate.addEventListener('click', () => sortDate('releaseDate'));
 
 
 
@@ -146,8 +146,28 @@ function sortHighToLow(property) {
 
 function sortDate() {
   const data = albumStore;
-  const parsedDate = data.forEach((album) => {
-    Date.parse(album.releaseDate)
+  const sortedData = data.sort((a, b) => {
+    const dateA = parseYearMonthDay(a.releaseDate);
+    const dateB = parseYearMonthDay(b.releaseDate);
+    return dateB - dateA;
   })
-  console.log(parsedDate);
+  console.log(sortedData);
+  clearData();
+  render(sortedData, albumRows);
+
+}
+
+function parseYearMonthDay(dateString) {
+  const parts = dateString.trim().split(' ');
+  if (parts.length === 3) {
+    return Date.parse(dateString);
+  }
+  else {
+    const month = parts[0].toLowerCase();
+    const year = parseInt(parts[1]);
+
+    const monthIndex = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'].indexOf(month);
+    return new Date(year, monthIndex);
+  }
+
 }
