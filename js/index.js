@@ -17,10 +17,21 @@ const numReviewsHeading = document.getElementsByTagName('th')[5];
 const releaseDate = document.getElementsByTagName('th')[1];
 
 albumForm.addEventListener('submit', onSubmitSearch);
-avgRatingHeading.addEventListener('click', () => sortHighToLow('averageRating'));
-numReviewsHeading.addEventListener('click', () => sortHighToLow('numberReviews'));
-releaseDate.addEventListener('click', () => sortDate('releaseDate'));
 
+// Average Rating Event Listeners
+avgRatingHeading.addEventListener('click', () => sortHighToLow('averageRating'));
+avgRatingHeading.addEventListener('mouseover', () => onMouseOver(avgRatingHeading));
+avgRatingHeading.addEventListener('mouseout', () => onMouseOut(avgRatingHeading));
+
+// Number of Reviews Event Listeners
+numReviewsHeading.addEventListener('click', () => sortHighToLow('numberReviews'));
+numReviewsHeading.addEventListener('mouseover', () => onMouseOver(numReviewsHeading));
+numReviewsHeading.addEventListener('mouseout', () => onMouseOut(numReviewsHeading));
+
+// Release Date Event Listeners
+releaseDate.addEventListener('click', () => sortDate('releaseDate'));
+releaseDate.addEventListener('mouseover', () => onMouseOver(releaseDate));
+releaseDate.addEventListener('mouseout', () => onMouseOut(releaseDate));
 
 
 //fetch album data
@@ -170,4 +181,13 @@ function parseYearMonthDay(dateString) {
     return new Date(year, monthIndex);
   }
 
+}
+
+function onMouseOver(element) {
+  element.style.color = 'blue';
+  element.style.cursor = 'pointer';
+}
+
+function onMouseOut(element) {
+  element.style.color = '';
 }
